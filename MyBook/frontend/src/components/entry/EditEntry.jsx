@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { useGetEntryQuery, useUpdateEntryMutation } from "../../redux/api/entriesApiSlice";
 import { toast } from "react-toastify";
 
+const MOOD_OPTIONS = [
+  { value: "\u{1F642}", label: "\u{1F642} Happy" },
+  { value: "\u{1F60C}", label: "\u{1F60C} Calm" },
+  { value: "\u{1F614}", label: "\u{1F614} Sad" },
+  { value: "\u{1F621}", label: "\u{1F621} Angry" },
+];
+
 const EditEntry = ({ id }) => {
   const [open, setOpen] = useState(false);
   const { data: getEntry, isLoading: entryLoading } = useGetEntryQuery(id, { skip: !open });
@@ -22,7 +29,7 @@ const EditEntry = ({ id }) => {
     if (getEntry) {
       setFormData({
         title: getEntry.data?.title || "",
-        mood: getEntry.data?.mood || "??",
+        mood: getEntry.data?.mood || MOOD_OPTIONS[0].value,
         content: getEntry.data?.content || "",
         date: new Date(getEntry.data?.date).toISOString().slice(0, 10) || "",
       });
@@ -96,10 +103,11 @@ const EditEntry = ({ id }) => {
                 onChange={handleChange}
                 className="select-premium mt-2"
               >
-                <option value="??">?? Happy</option>
-                <option value="??">?? Calm</option>
-                <option value="??">?? Sad</option>
-                <option value="??">?? Angry</option>
+                {MOOD_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

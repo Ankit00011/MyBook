@@ -4,9 +4,16 @@ import { FiPlus } from "react-icons/fi";
 import { useAddEntryMutation } from "../../redux/api/entriesApiSlice";
 import { toast } from "react-toastify";
 
+const MOOD_OPTIONS = [
+  { value: "\u{1F642}", label: "\u{1F642} Happy" },
+  { value: "\u{1F60C}", label: "\u{1F60C} Calm" },
+  { value: "\u{1F614}", label: "\u{1F614} Sad" },
+  { value: "\u{1F621}", label: "\u{1F621} Angry" },
+];
+
 const initialState = {
   title: "",
-  mood: "??",
+  mood: MOOD_OPTIONS[0].value,
   content: "",
   date: new Date().toISOString().slice(0, 10),
 };
@@ -88,10 +95,11 @@ const AddEntry = () => {
                 onChange={handleChange}
                 className="select-premium mt-2"
               >
-                <option value="??">?? Happy</option>
-                <option value="??">?? Calm</option>
-                <option value="??">?? Sad</option>
-                <option value="??">?? Angry</option>
+                {MOOD_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
