@@ -8,12 +8,23 @@ const entrySchema = new mongoose.Schema(
       ref: "User",
     },
     date: { type: Date, required: true },
-    title: String,
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 20,
+    },
     mood: {
       type: String,
+      required: true,
       enum: ["\u{1F642}", "\u{1F60C}", "\u{1F614}", "\u{1F621}"],
     },
-    content: String,
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 1500,
+    },
   },
   { timestamps: true }
 );

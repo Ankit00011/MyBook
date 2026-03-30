@@ -48,7 +48,7 @@ const EditEntry = ({ id }) => {
       setOpen(false);
       toast.success(response.message);
     } catch (error) {
-      toast.error(error.data.message);
+      toast.error(error?.data?.message || "Failed to update the entry.");
     }
   };
 

@@ -1,31 +1,56 @@
 const Entry = require("../models/entryModel");
 const validator = require("validator");
 
-const createEntry = async (req, res) => {
-  const { date, mood, title, content } = req.body;
-  const loggedUser = req.user;
+const normalizeEntryInput = (body = {}) => ({
+  date: typeof body.date === "string" ? body.date.trim() : "",
+  mood: typeof body.mood === "string" ? body.mood.trim() : "",
+  title: typeof body.title === "string" ? body.title.trim() : "",
+  content: typeof body.content === "string" ? body.content.trim() : "",
+});
 
-  if (!title || !content || !mood)
-    return res
-      .status(422)
-      .json({ message: "Please submit with required fields!" });
+const validateEntryInput = ({ date, mood, title, content }) => {
+  if (!title || !content || !mood || !date) {
+    return "Please submit with required fields!";
+  }
 
-  if (!validator.isDate(date)) {
-    return res.status(422).json({
-      message: "Please provide a valid date!",
-    });
+  if (!validator.isDate(date, { format: "YYYY-MM-DD", strictMode: true })) {
+    return "Please provide a valid date!";
   }
 
   if (title.length > 20) {
-    return res.status(422).json({
-      message: "Title length should not be more than 20 characters!",
-    });
+    return "Title length should not be more than 20 characters!";
   }
 
   if (content.length > 1500) {
+    return "Content length should not be more than 1500 characters";
+  }
+
+  return null;
+};
+
+const handleEntryError = (error, res, action) => {
+  console.error(`Error ${action} entry!: `, error);
+
+  if (error.name === "ValidationError" || error.name === "CastError") {
     return res.status(422).json({
-      message: "Content length should not be more than 1500 characters",
+      message:
+        Object.values(error.errors || {})[0]?.message ||
+        "Please provide valid entry details!",
     });
+  }
+
+  return res.status(500).json({
+    message: "Something went wrong! Please try again later!",
+  });
+};
+
+const createEntry = async (req, res) => {
+  const { date, mood, title, content } = normalizeEntryInput(req.body);
+  const loggedUser = req.user;
+
+  const validationError = validateEntryInput({ date, mood, title, content });
+  if (validationError) {
+    return res.status(422).json({ message: validationError });
   }
 
   try {
@@ -42,10 +67,7 @@ const createEntry = async (req, res) => {
       saveEntry,
     });
   } catch (error) {
-    console.error("Error adding entry!: ", error);
-    res.status(500).json({
-      message: "Something went wrong! Please try again later!",
-    });
+    return handleEntryError(error, res, "adding");
   }
 };
 
@@ -98,29 +120,11 @@ const getEntry = async (req, res) => {
 const updateEntry = async (req, res) => {
   const loggedUser = req.user;
   const entryId = req.params.id;
-  const { date, title, mood, content } = req.body;
+  const { date, title, mood, content } = normalizeEntryInput(req.body);
 
-  if (!title || !content || !mood)
-    return res
-      .status(422)
-      .json({ message: "Please submit with required fields!" });
-
-  if (!validator.isDate(date)) {
-    return res.status(422).json({
-      message: "Please provide a valid date!",
-    });
-  }
-
-  if (title.length > 20) {
-    return res.status(422).json({
-      message: "Title length should not be more than 20 characters!",
-    });
-  }
-
-  if (content.length > 1500) {
-    return res.status(422).json({
-      message: "Content length should not be more than 1500 characters",
-    });
+  const validationError = validateEntryInput({ date, mood, title, content });
+  if (validationError) {
+    return res.status(422).json({ message: validationError });
   }
 
   try {
@@ -140,10 +144,7 @@ const updateEntry = async (req, res) => {
       .status(200)
       .json({ message: "Entry updated successfully!", data: entry });
   } catch (error) {
-    console.error("Error updating this entry!: ", error);
-    res.status(500).json({
-      message: "Something went wrong! Please try again later!",
-    });
+    return handleEntryError(error, res, "updating");
   }
 };
 
