@@ -7,6 +7,10 @@ const entriesApiSlice = apiSlice.injectEndpoints({
         url: "/entries",
         method: "POST",
         body: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       }),
       invalidatesTags: ["Entries"],
     }),
@@ -25,6 +29,10 @@ const entriesApiSlice = apiSlice.injectEndpoints({
         url: `/entries/${id}`,
         method: "PATCH",
         body: data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       }),
       invalidatesTags: ["Entries"],
     }),

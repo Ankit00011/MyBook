@@ -48,6 +48,12 @@ const createEntry = async (req, res) => {
   const { date, mood, title, content } = normalizeEntryInput(req.body);
   const loggedUser = req.user;
 
+  if (!loggedUser?._id) {
+    return res.status(401).json({
+      message: "Unauthorized. Please log in and try again!",
+    });
+  }
+
   const validationError = validateEntryInput({ date, mood, title, content });
   if (validationError) {
     return res.status(422).json({ message: validationError });
@@ -121,6 +127,12 @@ const updateEntry = async (req, res) => {
   const loggedUser = req.user;
   const entryId = req.params.id;
   const { date, title, mood, content } = normalizeEntryInput(req.body);
+
+  if (!loggedUser?._id) {
+    return res.status(401).json({
+      message: "Unauthorized. Please log in and try again!",
+    });
+  }
 
   const validationError = validateEntryInput({ date, mood, title, content });
   if (validationError) {

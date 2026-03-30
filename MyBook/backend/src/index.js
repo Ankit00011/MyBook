@@ -5,9 +5,20 @@ const connectDB = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
+app.set("trust proxy", 1);
+
+const allowedOrigin = process.env.FRONTEND_URL;
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: process.env.FRONTEND_URL}));
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
