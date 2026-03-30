@@ -4,11 +4,17 @@ import { FiPlus } from "react-icons/fi";
 import { useAddEntryMutation } from "../../redux/api/entriesApiSlice";
 import { toast } from "react-toastify";
 
+// const MOOD_OPTIONS = [
+//   { value: "\u{1F642}", label: "\u{1F642} Happy" },
+//   { value: "\u{1F60C}", label: "\u{1F60C} Calm" },
+//   { value: "\u{1F614}", label: "\u{1F614} Sad" },
+//   { value: "\u{1F621}", label: "\u{1F621} Angry" },
+// ];
 const MOOD_OPTIONS = [
-  { value: "\u{1F642}", label: "\u{1F642} Happy" },
-  { value: "\u{1F60C}", label: "\u{1F60C} Calm" },
-  { value: "\u{1F614}", label: "\u{1F614} Sad" },
-  { value: "\u{1F621}", label: "\u{1F621} Angry" },
+  { value: "🙂", label: "🙂 Happy" },
+  { value: "😌", label: "😌 Calm" },
+  { value: "😔", label: "😔 Sad" },
+  { value: "😡", label: "😡 Angry" },
 ];
 
 const initialState = {
