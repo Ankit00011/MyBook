@@ -14,7 +14,7 @@
     "task",
     "management"
   ],
-  "author": "Hariom Sharma",
+  "author": "Ankit Sharma",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.2",
